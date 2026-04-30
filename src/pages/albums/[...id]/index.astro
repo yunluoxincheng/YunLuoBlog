@@ -1,0 +1,141 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+
+import { siteConfig } from "../../../config";
+import I18nKey from "../../../i18n/i18nKey";
+import { i18n } from "../../../i18n/translation";
+
+if (!siteConfig.featurePages.albums) {
+	return Astro.redirect("/404/");
+}
+
+export const getStaticPaths = () => [
+	{
+		params: {
+			id: "_loader",
+		},
+	},
+];
+
+const title = i18n(I18nKey.albums);
+const subtitle = i18n(I18nKey.albumsSubtitle);
+---
+
+<MainGridLayout title={title} description={subtitle}>
+	<script>
+		import("../../../scripts/right-sidebar-layout.js");
+		import { loadIconify } from "../../../utils/icon-loader";
+
+		loadIconify().catch((error) => {
+			console.error("Failed to load Iconify:", error);
+		});
+	</script>
+
+	<script
+		define:vars={{
+			loadingText: "Loading...",
+			errorText: "Failed to load album detail",
+			retryText: "Retry",
+			emptyTitleText: i18n(I18nKey.albumsEmpty),
+			emptyDescText: i18n(I18nKey.albumsEmptyDesc),
+			backToListText: i18n(I18nKey.albumsBackToList),
+			photosCountText: i18n(I18nKey.albumsPhotosCount),
+			notFoundText: i18n(I18nKey.albumsNoResults),
+		}}
+	>
+		import { initAlbumDetailApiPage } from "@/scripts/showcase/albums-page";
+
+		const bootstrap = () => {
+			initAlbumDetailApiPage({
+				loadingText,
+				errorText,
+				retryText,
+				emptyTitleText,
+				emptyDescText,
+				backToListText,
+				photosCountText,
+				notFoundText,
+			});
+		};
+
+		if (document.readyState === "loading") {
+			document.addEventListener("DOMContentLoaded", bootstrap, {
+				once: true,
+			});
+		} else {
+			bootstrap();
+		}
+
+		document.addEventListener("astro:page-load", bootstrap);
+	</script>
+
+	<div
+		id="album-detail-page-root"
+		class="w-full rounded-(--radius-large) overflow-hidden relative"
+	>
+		<div
+			id="album-detail-loading"
+			class="rounded-xl border border-black/10 dark:border-white/10 p-6 text-center text-black/60 dark:text-white/60 mb-4"
+		>
+			<div class="animate-pulse space-y-4">
+				<div
+					class="h-4 w-36 rounded bg-black/10 dark:bg-white/10 mx-auto"
+				></div>
+				<div class="h-52 rounded-xl bg-black/10 dark:bg-white/10"></div>
+				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+					<div class="h-36 rounded-xl bg-black/10 dark:bg-white/10"></div>
+					<div class="h-36 rounded-xl bg-black/10 dark:bg-white/10"></div>
+					<div class="h-36 rounded-xl bg-black/10 dark:bg-white/10"></div>
+				</div>
+			</div>
+		</div>
+
+		<div
+			id="album-detail-error"
+			class="hidden rounded-xl border border-red-300/50 bg-red-50/60 dark:bg-red-900/20 p-6 text-center mb-4"
+		>
+			<p
+				id="album-detail-error-text"
+				class="text-sm text-red-700 dark:text-red-300 mb-3"
+			>
+				Failed to load album detail
+			</p>
+			<button id="album-detail-retry" class="filter-tabs-item active">
+				Retry
+			</button>
+		</div>
+
+		<div id="album-detail-empty" class="hidden text-center py-16">
+			<Icon
+				name="material-symbols:photo-library"
+				class="text-6xl text-black/15 dark:text-white/15 mb-4"
+			/>
+			<p
+				id="album-detail-empty-text"
+				class="text-black/50 dark:text-white/50 text-lg"
+			>
+				{i18n(I18nKey.albumsNoResults)}
+			</p>
+			<a
+				href="/albums/"
+				class="inline-flex items-center gap-1 text-sm text-(--primary) hover:underline mt-4"
+			>
+				<Icon name="material-symbols:arrow-back" class="text-base" />
+				{i18n(I18nKey.albumsBackToList)}
+			</a>
+		</div>
+
+		<div id="album-detail-content" class="hidden">
+			<div class="w-full rounded-(--radius-large) overflow-hidden relative">
+				<div id="album-detail-banner"></div>
+			</div>
+
+			<div class="w-full rounded-(--radius-large) overflow-hidden relative mt-4">
+				<div class="card-base z-10 px-6 py-6 relative w-full">
+					<div id="album-detail-gallery"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</MainGridLayout>

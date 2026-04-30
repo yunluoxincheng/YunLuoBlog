@@ -1,0 +1,154 @@
+﻿---
+import "../styles/showcase-filter-tabs.css";
+
+import { PageHeader } from "@components/features/page-header";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+
+import { siteConfig } from "../config";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+
+if (!siteConfig.featurePages.skills) {
+return Astro.redirect("/404/");
+}
+
+const title = i18n(I18nKey.skills);
+const subtitle = i18n(I18nKey.skillsSubtitle);
+---
+
+<MainGridLayout title={title} description={subtitle}>
+<script>
+import("../scripts/right-sidebar-layout.js");
+</script>
+<script
+define:vars={{
+filterAllText: i18n(I18nKey.friendsFilterAll),
+loadingText: "Loading...",
+errorText: "Failed to load skills data",
+retryText: "Retry",
+noResultsText: i18n(I18nKey.noData),
+categoryTextMap: {
+frontend: i18n(I18nKey.skillsFrontend),
+backend: i18n(I18nKey.skillsBackend),
+database: i18n(I18nKey.skillsDatabase),
+tools: i18n(I18nKey.skillsTools),
+other: i18n(I18nKey.skillsOther),
+},
+levelTextMap: {
+expert: i18n(I18nKey.skillsExpert),
+advanced: i18n(I18nKey.skillsAdvanced),
+intermediate: i18n(I18nKey.skillsIntermediate),
+beginner: i18n(I18nKey.skillsBeginner),
+},
+yearsText: i18n(I18nKey.skillYears),
+monthsText: i18n(I18nKey.skillMonths),
+}}
+>
+import { initSkillsApiPage } from "@/scripts/showcase/skills-page";
+
+const bootstrap = () => {
+initSkillsApiPage({
+filterAllText,
+loadingText,
+errorText,
+retryText,
+noResultsText,
+categoryTextMap,
+levelTextMap,
+yearsText,
+monthsText,
+});
+};
+
+if (document.readyState === "loading") {
+document.addEventListener("DOMContentLoaded", bootstrap, {
+once: true,
+});
+} else {
+bootstrap();
+}
+
+document.addEventListener("astro:page-load", bootstrap);
+</script>
+
+<div
+id="skills-page-root"
+class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32"
+>
+<div class="card-base z-10 px-6 sm:px-9 py-6 relative w-full">
+<PageHeader title={title} subtitle={subtitle} />
+
+<div
+id="skills-loading"
+class="rounded-xl border border-black/10 dark:border-white/10 p-6 text-center text-black/60 dark:text-white/60 mb-6"
+>
+<div class="animate-pulse space-y-4">
+<div class="h-4 w-36 rounded bg-black/10 dark:bg-white/10 mx-auto"></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="h-24 rounded-xl bg-black/10 dark:bg-white/10"></div>
+<div class="h-24 rounded-xl bg-black/10 dark:bg-white/10"></div>
+</div>
+</div>
+</div>
+
+<div
+id="skills-error"
+class="hidden rounded-xl border border-red-300/50 bg-red-50/60 dark:bg-red-900/20 p-6 text-center mb-6"
+>
+<p
+id="skills-error-text"
+class="text-sm text-red-700 dark:text-red-300 mb-3"
+>
+Failed to load skills data
+</p>
+<button id="skills-retry" class="filter-tabs-item active">
+Retry
+</button>
+</div>
+
+<div class="mb-6">
+<div id="skills-category-tabs" class="flex flex-wrap gap-2">
+<button
+class="filter-tabs-item active"
+data-category="all"
+>
+{i18n(I18nKey.friendsFilterAll)}
+</button>
+</div>
+</div>
+
+<div id="skills-grid" class="hidden grid gap-6 items-start"></div>
+
+<div id="skills-no-results" class="hidden text-center py-16">
+<p
+id="skills-no-results-text"
+class="text-black/40 dark:text-white/40 text-lg"
+>
+{i18n(I18nKey.noData)}
+</p>
+</div>
+</div>
+</div>
+</MainGridLayout>
+
+<style is:global>
+#skills-grid {
+grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+#skills-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+
+#main-grid[data-layout-mode="grid"] #skills-grid {
+grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 639px) {
+#main-grid[data-layout-mode="grid"] #skills-grid {
+grid-template-columns: 1fr;
+}
+}
+</style>

@@ -1,25 +1,61 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
 .env
+.env.production
 *.env.local
 
-### OS ###
+# Large zip files
+*.zip
+
+# macOS-specific files
 .DS_Store
 Thumbs.db
 
-### IDE ###
+# IDE
 .idea/
 .vscode/
 *.iml
 
-### Node ###
-node_modules/
-
-### Local agent files ###
+# Local agent files
 .claude/
 .kilocode/
 AGENTS.md
 
-### OpenSpec ###
+# OpenSpec
 openspec/
 
+# cache
+cache/
+fuwari/
+src/data/myself.ts
+src/pages/myself.astro
+
+# Bangumi generated data
+src/data/bangumi-data.json
+
+# Bilibili generated data
+src/data/bilibili-data.json
+
+# Lighthouse CI
+.lighthouseci/
+
+# misc
 nul
 check_configs.ts
+.eslintcache
+.vercel
+package-lock.json
+bun.lockb
+yarn.lock

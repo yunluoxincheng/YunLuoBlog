@@ -1,0 +1,155 @@
+﻿---
+import "../styles/showcase-filter-tabs.css";
+
+import { PageHeader } from "@components/features/page-header";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+
+import { siteConfig } from "../config";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+
+if (!siteConfig.featurePages.projects) {
+return Astro.redirect("/404/");
+}
+
+const title = i18n(I18nKey.projects);
+const subtitle = i18n(I18nKey.projectsSubtitle);
+---
+
+<MainGridLayout title={title} description={subtitle}>
+<script>
+import("../scripts/right-sidebar-layout.js");
+</script>
+<script
+define:vars={{
+filterAllText: i18n(I18nKey.friendsFilterAll),
+visitText: i18n(I18nKey.projectsVisit),
+githubText: i18n(I18nKey.projectsGitHub),
+loadingText: "Loading...",
+errorText: "Failed to load projects data",
+retryText: "Retry",
+noResultsText: i18n(I18nKey.noData),
+statusTextMap: {
+completed: i18n(I18nKey.projectsCompleted),
+"in-progress": i18n(I18nKey.projectsInProgress),
+planned: i18n(I18nKey.projectsPlanned),
+},
+categoryTextMap: {
+web: i18n(I18nKey.projectsWeb),
+mobile: i18n(I18nKey.projectsMobile),
+desktop: i18n(I18nKey.projectsDesktop),
+other: i18n(I18nKey.projectsOther),
+uncategorized: i18n(I18nKey.uncategorized),
+},
+statsLabelMap: {
+total: i18n(I18nKey.projectsTotal),
+completed: i18n(I18nKey.projectsCompleted),
+inProgress: i18n(I18nKey.projectsInProgress),
+planned: i18n(I18nKey.projectsPlanned),
+},
+techStackTitle: i18n(I18nKey.projectsTechStack),
+}}
+>
+import { initProjectsApiPage } from "@/scripts/showcase/projects-page";
+
+const bootstrap = () => {
+initProjectsApiPage({
+filterAllText,
+visitText,
+githubText,
+loadingText,
+errorText,
+retryText,
+noResultsText,
+statusTextMap,
+categoryTextMap,
+statsLabelMap,
+techStackTitle,
+});
+};
+
+if (document.readyState === "loading") {
+document.addEventListener("DOMContentLoaded", bootstrap, {
+once: true,
+});
+} else {
+bootstrap();
+}
+
+document.addEventListener("astro:page-load", bootstrap);
+</script>
+
+<div
+id="projects-page-root"
+class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32"
+>
+<div class="card-base z-10 px-6 sm:px-9 py-6 relative w-full">
+<PageHeader title={title} subtitle={subtitle} />
+
+<div
+id="projects-loading"
+class="rounded-xl border border-black/10 dark:border-white/10 p-6 text-center text-black/60 dark:text-white/60 mb-6"
+>
+<div class="animate-pulse space-y-4">
+<div class="h-4 w-36 rounded bg-black/10 dark:bg-white/10 mx-auto"></div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="h-24 rounded-xl bg-black/10 dark:bg-white/10"></div>
+<div class="h-24 rounded-xl bg-black/10 dark:bg-white/10"></div>
+</div>
+</div>
+</div>
+
+<div
+id="projects-error"
+class="hidden rounded-xl border border-red-300/50 bg-red-50/60 dark:bg-red-900/20 p-6 text-center mb-6"
+>
+<p
+id="projects-error-text"
+class="text-sm text-red-700 dark:text-red-300 mb-3"
+>
+Failed to load projects data
+</p>
+<button id="projects-retry" class="filter-tabs-item active">
+Retry
+</button>
+</div>
+
+<div id="projects-stats"></div>
+
+<div class="mb-5">
+<div id="projects-category-tabs" class="flex flex-wrap gap-2">
+<button
+class="filter-tabs-item active"
+data-category="all"
+>
+{i18n(I18nKey.friendsFilterAll)}
+</button>
+</div>
+</div>
+
+<div class="mb-6">
+<div id="projects-status-tabs" class="flex flex-wrap gap-2">
+<button class="filter-tabs-item active" data-status="all">
+{i18n(I18nKey.friendsFilterAll)}
+</button>
+</div>
+</div>
+
+<div id="projects-tech-stack"></div>
+
+<div
+id="projects-grid"
+class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 items-start"
+></div>
+
+<div id="projects-no-results" class="hidden text-center py-16">
+<p
+id="projects-no-results-text"
+class="text-black/40 dark:text-white/40 text-lg"
+>
+{i18n(I18nKey.noData)}
+</p>
+</div>
+</div>
+</div>
+</MainGridLayout>

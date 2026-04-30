@@ -1,0 +1,172 @@
+---
+import { FilterTabs } from "@components/atoms/filter-tabs";
+import { PageHeader } from "@components/features/page-header";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+
+import { siteConfig } from "../config";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+
+if (!siteConfig.featurePages.albums) {
+	return Astro.redirect("/404/");
+}
+
+const title = i18n(I18nKey.albums);
+const subtitle = i18n(I18nKey.albumsSubtitle);
+---
+
+<MainGridLayout title={title} description={subtitle}>
+	<script>
+		import("../scripts/right-sidebar-layout.js");
+		import { loadIconify } from "../utils/icon-loader";
+
+		loadIconify().catch((error) => {
+			console.error("Failed to load Iconify:", error);
+		});
+	</script>
+	<script
+		define:vars={{
+			filterAllText: i18n(I18nKey.albumsFilterAll),
+			noResultsText: i18n(I18nKey.albumsNoResults),
+			loadingText: "Loading...",
+			errorText: "Failed to load albums data",
+			retryText: "Retry",
+			emptyTitleText: i18n(I18nKey.albumsEmpty),
+			emptyDescText: i18n(I18nKey.albumsEmptyDesc),
+			photosCountText: i18n(I18nKey.albumsPhotosCount),
+		}}
+	>
+		import { initAlbumsApiPage } from "@/scripts/showcase/albums-page";
+
+		const bootstrap = () => {
+			initAlbumsApiPage({
+				filterAllText,
+				noResultsText,
+				loadingText,
+				errorText,
+				retryText,
+				emptyTitleText,
+				emptyDescText,
+				photosCountText,
+			});
+		};
+
+		if (document.readyState === "loading") {
+			document.addEventListener("DOMContentLoaded", bootstrap, {
+				once: true,
+			});
+		} else {
+			bootstrap();
+		}
+
+		document.addEventListener("astro:page-load", bootstrap);
+	</script>
+
+	<div
+		id="albums-page-root"
+		class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32"
+	>
+		<div class="card-base z-10 px-6 sm:px-9 py-6 relative w-full">
+			<PageHeader title={title} subtitle={subtitle} />
+
+			<div id="albums-filter-tabs" class="mb-8">
+				<FilterTabs
+					tabs={[
+						{
+							value: "all",
+							label: i18n(I18nKey.albumsFilterAll),
+							icon: "material-symbols:apps",
+							count: 0,
+						},
+					]}
+					dataAttr="tags"
+				/>
+			</div>
+
+			<div
+				id="albums-loading"
+				class="rounded-xl border border-black/10 dark:border-white/10 p-6 text-center text-black/60 dark:text-white/60 mb-6"
+			>
+				<div class="animate-pulse space-y-4">
+					<div
+						class="h-4 w-36 rounded bg-black/10 dark:bg-white/10 mx-auto"
+					></div>
+					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+						<div class="h-36 rounded-xl bg-black/10 dark:bg-white/10"></div>
+						<div class="h-36 rounded-xl bg-black/10 dark:bg-white/10"></div>
+						<div class="h-36 rounded-xl bg-black/10 dark:bg-white/10"></div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				id="albums-error"
+				class="hidden rounded-xl border border-red-300/50 bg-red-50/60 dark:bg-red-900/20 p-6 text-center mb-6"
+			>
+				<p
+					id="albums-error-text"
+					class="text-sm text-red-700 dark:text-red-300 mb-3"
+				>
+					Failed to load albums data
+				</p>
+				<button id="albums-retry" class="filter-tabs-item active">
+					Retry
+				</button>
+			</div>
+
+			<div id="albums-grid" class="hidden grid gap-6 items-start"></div>
+
+			<div id="albums-no-results" class="hidden text-center py-16">
+				<Icon
+					name="material-symbols:search-off-rounded"
+					class="text-6xl text-black/15 dark:text-white/15 mb-4"
+				/>
+				<p
+					id="albums-no-results-text"
+					class="text-black/40 dark:text-white/40 text-lg"
+				>
+					{i18n(I18nKey.albumsNoResults)}
+				</p>
+			</div>
+
+			<div id="albums-empty" class="hidden text-center py-16">
+				<Icon
+					name="material-symbols:photo-library"
+					class="text-6xl text-black/15 dark:text-white/15 mb-4"
+				/>
+				<h3
+					id="albums-empty-title"
+					class="text-lg font-medium text-black/90 dark:text-white/90 mb-2"
+				>
+					{i18n(I18nKey.albumsEmpty)}
+				</h3>
+				<p id="albums-empty-desc" class="text-black/60 dark:text-white/60">
+					{i18n(I18nKey.albumsEmptyDesc)}
+				</p>
+			</div>
+		</div>
+	</div>
+</MainGridLayout>
+
+<style is:global>
+	#albums-grid {
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 640px) {
+		#albums-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	#main-grid[data-layout-mode="grid"] #albums-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	@media (max-width: 639px) {
+		#main-grid[data-layout-mode="grid"] #albums-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

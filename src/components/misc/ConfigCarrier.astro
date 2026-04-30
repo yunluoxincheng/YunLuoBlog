@@ -1,0 +1,50 @@
+---
+import {
+	expressiveCodeConfig,
+	musicPlayerConfig,
+	pioConfig,
+	siteConfig,
+} from "@/config";
+---
+
+<!-- 全局配置载体 -->
+<div
+	id="config-carrier"
+	data-hue={siteConfig.themeColor.hue}
+	data-hide-code-blocks-during-transition={expressiveCodeConfig.hideDuringThemeTransition
+		? "true"
+		: "false"}
+>
+</div>
+
+<script
+	is:inline
+	define:vars={{
+		siteLang: siteConfig.lang,
+		tocConfig: siteConfig.toc,
+		themeColorConfig: siteConfig.themeColor,
+		wallpaperModeConfig: siteConfig.wallpaperMode,
+		hideCodeBlocksDuringTransition:
+			expressiveCodeConfig.hideDuringThemeTransition ?? true,
+		musicPlayerRuntimeConfig: musicPlayerConfig,
+		pioRuntimeConfig: pioConfig,
+	}}
+>
+	window.siteConfig = window.siteConfig || {};
+	window.siteConfig.site = {
+		lang: siteLang,
+		toc: tocConfig,
+		themeColor: themeColorConfig,
+		wallpaperMode: wallpaperModeConfig,
+	};
+	window.siteConfig.lang = siteLang;
+	window.siteConfig.toc = tocConfig;
+	window.siteConfig.themeColor = themeColorConfig;
+	window.siteConfig.wallpaperMode = wallpaperModeConfig;
+	window.siteConfig.expressiveCode = {
+		hideDuringThemeTransition: hideCodeBlocksDuringTransition,
+	};
+	window.siteConfig.musicPlayer = musicPlayerRuntimeConfig;
+	window.siteConfig.pio = pioRuntimeConfig;
+</script>
+

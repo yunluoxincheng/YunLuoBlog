@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -25,18 +23,14 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: yunluoblog-web/pnpm-lock.yaml
 
       - name: Install dependencies
-        working-directory: yunluoblog-web
         run: pnpm install --frozen-lockfile
 
       - name: Type check
-        working-directory: yunluoblog-web
         run: pnpm type-check
 
       - name: Build
-        working-directory: yunluoblog-web
         run: pnpm build
 
       - name: Login to Docker Hub

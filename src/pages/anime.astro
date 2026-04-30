@@ -1,0 +1,136 @@
+﻿---
+import "../styles/anime.css";
+
+import { AnimeFilters } from "@components/features/anime";
+import { PageHeader } from "@components/features/page-header";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+
+import { siteConfig } from "../config";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+
+if (!siteConfig.featurePages.anime) {
+return Astro.redirect("/404/");
+}
+
+const title = i18n(I18nKey.animeTitle);
+const subtitle = i18n(I18nKey.animeSubtitle);
+---
+
+<MainGridLayout title={i18n(I18nKey.anime)} description={subtitle}>
+<script>
+import("../scripts/right-sidebar-layout.js");
+</script>
+<script
+define:vars={{
+yearLabel: i18n(I18nKey.animeYear),
+studioLabel: i18n(I18nKey.animeStudio),
+emptyText: i18n(I18nKey.animeEmpty),
+loadingText: "Loading...",
+errorText: "Failed to load anime data",
+retryText: "Retry",
+statusTextMap: {
+watching: i18n(I18nKey.animeStatusWatching),
+completed: i18n(I18nKey.animeStatusCompleted),
+planned: i18n(I18nKey.animeStatusPlanned),
+onhold: i18n(I18nKey.animeStatusOnHold),
+dropped: i18n(I18nKey.animeStatusDropped),
+default: i18n(I18nKey.animeFilterAll),
+},
+}}
+>
+import { initAnimeApiPage } from "@/scripts/showcase/anime-page";
+
+const bootstrap = () => {
+initAnimeApiPage({
+yearLabel,
+studioLabel,
+emptyText,
+loadingText,
+errorText,
+retryText,
+statusTextMap,
+});
+};
+
+if (document.readyState === "loading") {
+document.addEventListener("DOMContentLoaded", bootstrap, {
+once: true,
+});
+} else {
+bootstrap();
+}
+
+document.addEventListener("astro:page-load", bootstrap);
+</script>
+
+<div
+id="anime-page-root"
+class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32"
+>
+<div class="card-base anime-card-base z-10 px-9 py-6 relative w-full">
+<div class="relative w-full mb-8">
+<PageHeader title={title} subtitle={subtitle} />
+
+<div class="mb-6">
+<AnimeFilters
+filterAllLabel={i18n(I18nKey.animeFilterAll)}
+statusWatchingLabel={i18n(I18nKey.animeStatusWatching)}
+statusPlannedLabel={i18n(I18nKey.animeStatusPlanned)}
+statusCompletedLabel={i18n(
+I18nKey.animeStatusCompleted,
+)}
+statusOnHoldLabel={i18n(I18nKey.animeStatusOnHold)}
+statusDroppedLabel={i18n(I18nKey.animeStatusDropped)}
+showExtendedFilters={true}
+/>
+</div>
+</div>
+
+<div
+id="anime-loading"
+class="mb-8 rounded-xl border border-black/10 dark:border-white/10 p-6 text-center text-black/60 dark:text-white/60"
+>
+<div class="animate-pulse space-y-4">
+<div class="h-4 w-36 rounded bg-black/10 dark:bg-white/10 mx-auto"></div>
+<div class="space-y-3">
+<div class="h-24 rounded-xl bg-black/10 dark:bg-white/10"></div>
+<div class="h-24 rounded-xl bg-black/10 dark:bg-white/10"></div>
+<div class="h-24 rounded-xl bg-black/10 dark:bg-white/10"></div>
+</div>
+</div>
+</div>
+
+<div
+id="anime-error"
+class="hidden mb-8 rounded-xl border border-red-300/50 bg-red-50/60 dark:bg-red-900/20 p-6 text-center"
+>
+<p
+id="anime-error-text"
+class="text-sm text-red-700 dark:text-red-300 mb-3"
+>
+Failed to load anime data
+</p>
+<button id="anime-retry" class="anime-filter-tag anime-active">
+Retry
+</button>
+</div>
+
+<div id="anime-empty" class="hidden text-center py-12">
+<div class="text-5xl mb-4">😢</div>
+<h3
+id="anime-empty-text"
+class="text-xl font-medium text-black/80 dark:text-white/80"
+>
+{i18n(I18nKey.animeEmpty)}
+</h3>
+</div>
+
+<div
+id="anime-list-container"
+class="hidden anime-grid-container grid gap-4 md:gap-6"
+>
+</div>
+</div>
+</div>
+</MainGridLayout>

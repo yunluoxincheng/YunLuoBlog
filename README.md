@@ -18,22 +18,28 @@
   [Nginx :${NGINX_PORT}] 纯静态页面
 ```
 
-## 仓库结构
+## 项目结构
 
 ```
 yunluoblog/
-├── yunluoblog-web/        # 前端 — Astro 6 + Svelte 5（submodule）
+├── src/                   # 前端源码
+│   ├── pages/             # Astro 页面路由
+│   ├── components/        # Svelte/Astro 组件（原子设计）
+│   ├── content/posts/     # 博客文章（Markdown）
+│   ├── data/              # 展示类静态数据（友链、日记、相册等）
+│   ├── config.ts          # 站点配置入口
+│   └── config-data.json   # 用户自定义配置
+├── public/                # 静态资源（图片、字体等）
+├── scripts/               # 构建脚本
 ├── nginx/
 │   └── nginx.conf         # Nginx 静态文件服务配置
 ├── Dockerfile             # 多阶段构建（node build → nginx）
 ├── docker-compose.yml     # 容器编排（单 nginx 服务）
-├── .env.example           # 环境变量模板（仅 NGINX_PORT）
 ├── .github/workflows/     # CI/CD 自动部署
-├── uploads/               # 上传文件存储目录
-└── README.md
+└── package.json           # 前端依赖和脚本
 ```
 
-## 功能概览
+## 功能
 
 - Astro 6 静态站点 + Svelte 5 交互组件
 - 博客文章（Markdown 文件管理）、分类、标签、归档
@@ -41,47 +47,42 @@ yunluoblog/
 - 相册（本地文件扫描）
 - Pagefind 全文搜索、RSS/Atom、站点地图
 - 暗色模式、主题色自定义、Swup 页面过渡动画
-- 评论系统（Twikoo / Giscus）
-- 音乐播放器
+- 评论系统（Twikoo / Giscus）、音乐播放器
 
 ## 快速开始
 
 ### 本地开发
 
 ```bash
-cd yunluoblog-web
 pnpm install
 pnpm dev
 ```
 
-### 本地 Docker 部署
+### 本地生产构建
 
 ```bash
-# 先构建前端
-cd yunluoblog-web
 pnpm build
+pnpm preview
+```
 
-# 回到根目录
-cd ..
-docker compose up -d --build
+### Docker 构建
+
+```bash
+docker build -t yunluoblog .
+docker run -p 80:80 yunluoblog
 ```
 
 ### 生产部署
 
 ```bash
-# 服务器上
+# 服务器上准备
 mkdir -p /opt/yunluoblog
 cd /opt/yunluoblog
-
-# 创建 .env 文件
 echo "NGINX_PORT=80" > .env
 
-# 创建 docker-compose.yml（参考下方配置）
-# 启动
+# 创建 docker-compose.yml（或从仓库复制）
 docker compose up -d
 ```
-
-**配置 GitHub Secrets 后，push 到 main 分支即可自动部署。**
 
 ## 内容管理
 
@@ -89,18 +90,11 @@ docker compose up -d
 
 | 内容类型 | 文件位置 | 格式 |
 |----------|---------|------|
-| 博客文章 | `yunluoblog-web/src/content/posts/*.md` | Markdown + frontmatter |
-| 站点配置 | `yunluoblog-web/src/config-data.json` | JSON |
-| 友链数据 | `yunluoblog-web/src/data/friends.ts` | TypeScript |
-| 日记数据 | `yunluoblog-web/src/data/diary.ts` | TypeScript |
-| 相册数据 | `yunluoblog-web/src/data/albums.ts` | TypeScript |
-| 番剧数据 | `yunluoblog-web/src/data/anime.ts` | TypeScript |
-| 项目数据 | `yunluoblog-web/src/data/projects.ts` | TypeScript |
-| 技能数据 | `yunluoblog-web/src/data/skills.ts` | TypeScript |
-| 时间线数据 | `yunluoblog-web/src/data/timeline.ts` | TypeScript |
-| 设备数据 | `yunluoblog-web/src/data/devices.ts` | TypeScript |
-| 图片资源 | `yunluoblog-web/public/images/` | 图片文件 |
-| 相册照片 | `yunluoblog-web/public/albums/` | 图片文件 |
+| 博客文章 | `src/content/posts/*.md` | Markdown + frontmatter |
+| 站点配置 | `src/config-data.json` | JSON |
+| 展示数据 | `src/data/*.ts` | TypeScript |
+| 图片资源 | `public/images/` | 图片文件 |
+| 相册照片 | `public/albums/` | 图片文件 |
 
 ## 环境变量
 
@@ -108,11 +102,11 @@ docker compose up -d
 |------|------|--------|
 | `NGINX_PORT` | Nginx 暴露端口 | `80` |
 
-## GitHub Secrets 配置
+## GitHub Secrets
 
 | Secret | 说明 |
 |--------|------|
-| `DOCKERHUB_USERNAME` | Docker Hub 用户名（yunluoxincheng） |
+| `DOCKERHUB_USERNAME` | Docker Hub 用户名 |
 | `DOCKERHUB_TOKEN` | Docker Hub Access Token |
 | `SSH_HOST` | 服务器 IP 或域名 |
 | `SSH_USER` | 服务器 SSH 用户名 |
@@ -121,3 +115,7 @@ docker compose up -d
 ## 许可证
 
 MIT
+
+---
+
+本主题基于 [Mizuki](https://github.com/LyraVoid/Mizuki) 修改。

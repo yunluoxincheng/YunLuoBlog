@@ -1,0 +1,31 @@
+.filter-tabs-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--line-divider);
+	border-radius: var(--radius-large);
+	background: var(--btn-regular-bg);
+	color: var(--btn-content);
+	font-size: 0.875rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	white-space: nowrap;
+}
+
+.filter-tabs-item:hover:not(.active) {
+	background: var(--btn-regular-bg-hover);
+	border-color: var(--primary);
+}
+
+.filter-tabs-item.active {
+	background: var(--primary);
+	color: white;
+	border-color: var(--primary);
+}
+
+.filter-tabs-item:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}

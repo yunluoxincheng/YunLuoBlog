@@ -1,0 +1,172 @@
+﻿---
+import "../styles/showcase-filter-tabs.css";
+
+import { siteConfig } from "../config";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+
+export const prerender = true;
+
+if (!siteConfig.featurePages.devices) {
+return Astro.redirect("/404/");
+}
+---
+
+<MainGridLayout title={i18n(I18nKey.devices)}>
+<script>
+import("../scripts/right-sidebar-layout.js");
+</script>
+<script
+define:vars={{
+loadingText: "Loading...",
+errorText: "Failed to load devices data",
+retryText: "Retry",
+filterAllText: i18n(I18nKey.friendsFilterAll),
+noResultsText: i18n(I18nKey.noData),
+viewDetailsText: i18n(I18nKey.devicesViewDetails),
+}}
+>
+import { initDevicesApiPage } from "@/scripts/showcase/devices-page";
+
+const bootstrap = () => {
+initDevicesApiPage({
+loadingText,
+errorText,
+retryText,
+filterAllText,
+noResultsText,
+viewDetailsText,
+});
+};
+
+if (document.readyState === "loading") {
+document.addEventListener("DOMContentLoaded", bootstrap, {
+once: true,
+});
+} else {
+bootstrap();
+}
+
+document.addEventListener("astro:page-load", bootstrap);
+</script>
+
+<div
+id="devices-page-root"
+class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32"
+>
+<div class="card-base z-10 px-9 py-6 relative w-full">
+<div class="flex flex-col items-start justify-center mb-8">
+<h1
+class="text-4xl font-bold text-black/90 dark:text-white/90 mb-2 relative before:w-1 before:h-8 before:rounded-md before:bg-[var(--primary)] before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4"
+>
+{i18n(I18nKey.devices)}
+</h1>
+<p class="text-lg text-black/60 dark:text-white/60">
+{i18n(I18nKey.devicesSubtitle)}
+</p>
+</div>
+
+<div
+id="devices-loading"
+class="rounded-xl border border-black/10 dark:border-white/10 p-6 text-center text-black/60 dark:text-white/60 mb-6"
+>
+<div class="animate-pulse space-y-4">
+<div class="h-4 w-36 rounded bg-black/10 dark:bg-white/10 mx-auto"></div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="h-24 rounded-xl bg-black/10 dark:bg-white/10"></div>
+<div class="h-24 rounded-xl bg-black/10 dark:bg-white/10"></div>
+<div class="h-24 rounded-xl bg-black/10 dark:bg-white/10"></div>
+</div>
+</div>
+</div>
+
+<div
+id="devices-error"
+class="hidden rounded-xl border border-red-300/50 bg-red-50/60 dark:bg-red-900/20 p-6 text-center mb-6"
+>
+<p
+id="devices-error-text"
+class="text-sm text-red-700 dark:text-red-300 mb-3"
+>
+Failed to load devices data
+</p>
+<button id="devices-retry" class="filter-tabs-item active">
+Retry
+</button>
+</div>
+
+<div class="mb-6">
+<div id="devices-brand-tabs" class="filter-container flex flex-wrap gap-2">
+<button class="filter-tag active" data-brand="all">
+{i18n(I18nKey.friendsFilterAll)}
+</button>
+</div>
+</div>
+
+<div
+id="devices-container"
+class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+></div>
+
+<div id="devices-no-results" class="hidden text-center py-16">
+<p
+id="devices-no-results-text"
+class="text-black/40 dark:text-white/40 text-lg"
+>
+{i18n(I18nKey.noData)}
+</p>
+</div>
+</div>
+</div>
+</MainGridLayout>
+
+<style>
+.filter-container {
+display: flex;
+flex-wrap: wrap;
+gap: 0.75rem;
+margin-bottom: 1rem;
+}
+
+.filter-tag {
+padding: 0.625rem 1.25rem;
+border: 1px solid var(--line-divider);
+border-radius: var(--radius-large);
+background: var(--btn-regular-bg);
+color: var(--btn-content);
+font-size: 0.875rem;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+white-space: nowrap;
+position: relative;
+overflow: hidden;
+}
+
+.filter-tag:hover:not(.active) {
+background: var(--btn-hover-bg);
+border-color: var(--primary);
+transform: translateY(-2px);
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-tag.active {
+background: var(--primary);
+color: white;
+border-color: var(--primary);
+transform: translateY(-1px);
+box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
+}
+
+@media (max-width: 768px) {
+.filter-container {
+gap: 0.5rem;
+}
+
+.filter-tag {
+padding: 0.5rem 1rem;
+font-size: 0.8rem;
+}
+}
+</style>

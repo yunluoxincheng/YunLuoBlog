@@ -4,11 +4,11 @@ WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 
-COPY yunluoblog-web/package.json yunluoblog-web/pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./
 
 RUN pnpm install --frozen-lockfile
 
-COPY yunluoblog-web/ ./
+COPY . .
 
 ENV NODE_ENV=production
 

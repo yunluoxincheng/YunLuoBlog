@@ -1,0 +1,143 @@
+﻿---
+import "../styles/showcase-filter-tabs.css";
+
+import { PageHeader } from "@components/features/page-header";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+
+import { siteConfig } from "../config";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+
+if (!siteConfig.featurePages.timeline) {
+return Astro.redirect("/404/");
+}
+
+const title = i18n(I18nKey.timeline);
+const subtitle = i18n(I18nKey.timelineSubtitle);
+---
+
+<MainGridLayout title={title} description={subtitle}>
+<script>
+import("../scripts/right-sidebar-layout.js");
+</script>
+<script
+define:vars={{
+filterAllText: i18n(I18nKey.friendsFilterAll),
+loadingText: "Loading...",
+errorText: "Failed to load timeline data",
+retryText: "Retry",
+noResultsText: i18n(I18nKey.noData),
+presentText: i18n(I18nKey.timelinePresent),
+yearsText: i18n(I18nKey.timelineYears),
+monthsText: i18n(I18nKey.timelineMonths),
+typeTextMap: {
+education: i18n(I18nKey.timelineEducation),
+work: i18n(I18nKey.timelineWork),
+project: i18n(I18nKey.timelineProject),
+achievement: i18n(I18nKey.timelineAchievement),
+},
+achievementsText: i18n(I18nKey.timelineAchievements),
+}}
+>
+import { initTimelineApiPage } from "@/scripts/showcase/timeline-page";
+
+const bootstrap = () => {
+initTimelineApiPage({
+filterAllText,
+loadingText,
+errorText,
+retryText,
+noResultsText,
+presentText,
+yearsText,
+monthsText,
+typeTextMap,
+achievementsText,
+});
+};
+
+if (document.readyState === "loading") {
+document.addEventListener("DOMContentLoaded", bootstrap, {
+once: true,
+});
+} else {
+bootstrap();
+}
+
+document.addEventListener("astro:page-load", bootstrap);
+</script>
+
+<div
+id="timeline-page-root"
+class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32"
+>
+<div class="card-base z-10 px-6 sm:px-9 py-6 relative w-full">
+<PageHeader title={title} subtitle={subtitle} />
+
+<div
+id="timeline-loading"
+class="rounded-xl border border-black/10 dark:border-white/10 p-6 text-center text-black/60 dark:text-white/60 mb-6"
+>
+<div class="animate-pulse space-y-4">
+<div class="h-4 w-36 rounded bg-black/10 dark:bg-white/10 mx-auto"></div>
+<div class="space-y-3">
+<div class="h-20 rounded-xl bg-black/10 dark:bg-white/10"></div>
+<div class="h-20 rounded-xl bg-black/10 dark:bg-white/10"></div>
+<div class="h-20 rounded-xl bg-black/10 dark:bg-white/10"></div>
+</div>
+</div>
+</div>
+
+<div
+id="timeline-error"
+class="hidden rounded-xl border border-red-300/50 bg-red-50/60 dark:bg-red-900/20 p-6 text-center mb-6"
+>
+<p
+id="timeline-error-text"
+class="text-sm text-red-700 dark:text-red-300 mb-3"
+>
+Failed to load timeline data
+</p>
+<button id="timeline-retry" class="filter-tabs-item active">
+Retry
+</button>
+</div>
+
+<div class="mb-6">
+<div id="timeline-type-tabs" class="flex flex-wrap gap-2">
+<button class="filter-tabs-item active" data-type="all">
+{i18n(I18nKey.friendsFilterAll)}
+</button>
+</div>
+</div>
+
+<div id="timeline-list" class="hidden timeline-list"></div>
+
+<div id="timeline-no-results" class="hidden text-center py-16">
+<p
+id="timeline-no-results-text"
+class="text-black/40 dark:text-white/40 text-lg"
+>
+{i18n(I18nKey.noData)}
+</p>
+</div>
+</div>
+</div>
+</MainGridLayout>
+
+<style>
+.timeline-list {
+position: relative;
+}
+
+.timeline-list::before {
+content: "";
+position: absolute;
+left: 9px;
+top: 0;
+bottom: 0;
+width: 2px;
+background: var(--line-divider);
+border-radius: 1px;
+}
+</style>

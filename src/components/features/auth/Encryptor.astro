@@ -1,0 +1,18 @@
+---
+import "@/styles/markdown.css";
+import "@/styles/expressive-code.css";
+import "@/styles/encrypted-content.css";
+import "@/styles/markdown-extend.styl";
+
+import PasswordProtection from "./PasswordProtection.astro";
+
+export interface Props {
+	hint?: string;
+	postId?: number;
+}
+
+const { hint = "", postId } = Astro.props;
+
+---
+
+<PasswordProtection hint={hint} postId={postId} />

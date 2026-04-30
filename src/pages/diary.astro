@@ -1,0 +1,164 @@
+﻿---
+import "../styles/showcase-filter-tabs.css";
+
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+
+import { siteConfig } from "../config";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+
+if (!siteConfig.featurePages.diary) {
+return Astro.redirect("/404/");
+}
+
+const title = i18n(I18nKey.diary);
+const subtitle = i18n(I18nKey.diarySubtitle);
+---
+
+<MainGridLayout title={title} description={subtitle}>
+<script>
+import("../scripts/right-sidebar-layout.js");
+</script>
+<script
+define:vars={{
+filterAllText: i18n(I18nKey.albumsFilterAll),
+noResultsText: i18n(I18nKey.diaryNoResults),
+minutesAgoText: i18n(I18nKey.diaryMinutesAgo),
+hoursAgoText: i18n(I18nKey.diaryHoursAgo),
+daysAgoText: i18n(I18nKey.diaryDaysAgo),
+loadingText: "Loading...",
+errorText: "Failed to load diary data",
+retryText: "Retry",
+pageLabelText: "Page",
+previousText: "Prev",
+nextText: "Next",
+}}
+>
+import { initDiaryApiPage } from "@/scripts/showcase/diary-page";
+
+const bootstrap = () => {
+initDiaryApiPage({
+filterAllText,
+noResultsText,
+minutesAgoText,
+hoursAgoText,
+daysAgoText,
+loadingText,
+errorText,
+retryText,
+pageLabelText,
+previousText,
+nextText,
+});
+};
+
+if (document.readyState === "loading") {
+document.addEventListener("DOMContentLoaded", bootstrap, {
+once: true,
+});
+} else {
+bootstrap();
+}
+
+document.addEventListener("astro:page-load", bootstrap);
+</script>
+
+<div
+id="diary-page-root"
+class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32"
+>
+<div class="card-base z-10 relative w-full overflow-hidden">
+<div class="px-6 sm:px-9 py-6">
+<div
+class="rounded-xl bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark,var(--primary))] p-5 sm:p-6"
+>
+<div class="flex items-center justify-between gap-4">
+<div class="min-w-0">
+<h1
+class="text-2xl sm:text-3xl font-bold text-white mb-1 drop-shadow-sm truncate"
+>
+{title}
+</h1>
+<p
+class="text-sm sm:text-base text-white/80 truncate"
+>
+{subtitle}
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="px-6 sm:px-9 pt-2 pb-6">
+<div id="diary-tag-tabs" class="flex flex-wrap gap-2 mb-6">
+<button class="filter-tabs-item active" data-tag="all">
+{i18n(I18nKey.albumsFilterAll)}
+</button>
+</div>
+
+<div
+id="diary-loading"
+class="rounded-xl border border-black/10 dark:border-white/10 p-6 text-center text-black/60 dark:text-white/60 mb-4"
+>
+<div class="animate-pulse space-y-4">
+<div class="h-4 w-36 rounded bg-black/10 dark:bg-white/10 mx-auto"></div>
+<div class="space-y-3">
+<div class="h-20 rounded-xl bg-black/10 dark:bg-white/10"></div>
+<div class="h-20 rounded-xl bg-black/10 dark:bg-white/10"></div>
+<div class="h-20 rounded-xl bg-black/10 dark:bg-white/10"></div>
+</div>
+</div>
+</div>
+
+<div
+id="diary-error"
+class="hidden rounded-xl border border-red-300/50 bg-red-50/60 dark:bg-red-900/20 p-6 text-center mb-4"
+>
+<p
+id="diary-error-text"
+class="text-sm text-red-700 dark:text-red-300 mb-3"
+>
+Failed to load diary data
+</p>
+<button id="diary-retry" class="filter-tabs-item active">
+Retry
+</button>
+</div>
+
+<div id="diary-list" class="hidden space-y-4"></div>
+
+<div id="diary-no-results" class="hidden text-center py-16">
+<Icon
+name="material-symbols:edit-note"
+class="text-6xl text-black/15 dark:text-white/15 mb-4"
+/>
+<p
+id="diary-no-results-text"
+class="text-black/40 dark:text-white/40 text-lg"
+>
+{i18n(I18nKey.diaryNoResults)}
+</p>
+</div>
+
+<div
+id="diary-pagination"
+class="hidden mt-6 flex items-center justify-center gap-2"
+>
+<button id="diary-prev" class="filter-tabs-item">Prev</button>
+<span
+id="diary-page-info"
+class="text-sm text-black/60 dark:text-white/60 px-3"
+></span>
+<button id="diary-next" class="filter-tabs-item">Next</button>
+</div>
+
+<div
+class="text-center mt-8 text-black/50 dark:text-white/50 text-sm italic"
+>
+{i18n(I18nKey.diaryTips)}
+</div>
+</div>
+</div>
+</div>
+</MainGridLayout>
