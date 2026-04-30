@@ -198,7 +198,7 @@
         "HENTAI!",
         "Don't bully me like that!"
       ],
-      "welcome": "Welcome to Mizuki Website!"
+      "welcome": "Welcome to YunLuoBlog!"
     },
     "enable": false,
     "height": 250,
@@ -437,7 +437,7 @@
         "interval": 3
       },
       "homeText": {
-        "title": "YunLuoBlog",
+        "title": "YunLuoの世界",
         "enable": true,
         "subtitle": [
           "记录技术，分享生活",
@@ -483,7 +483,7 @@
       "icon": "assets/home/home.webp",
       "logo": "assets/home/default-logo.webp",
       "mode": "text-icon",
-      "text": "MizukiUI"
+      "text": "YunLuoBlog"
     },
     "pageScaling": {
       "enable": true,
