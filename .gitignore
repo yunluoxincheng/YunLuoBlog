@@ -13,12 +13,6 @@ Thumbs.db
 ### Node ###
 node_modules/
 
-### Maven ###
-target/
-
-### PostgreSQL data (if mounted locally) ###
-pgdata/
-
 ### Local agent files ###
 .claude/
 .kilocode/
