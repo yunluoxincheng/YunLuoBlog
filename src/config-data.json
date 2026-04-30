@@ -7,13 +7,13 @@
       "external": false
     },
     "title": "",
-    "content": "ブログへようこそ！これはサンプルの告知です",
+    "content": "欢迎来到 YunLuoBlog！",
     "closable": true
   },
   "comment": {
     "enable": false,
     "giscus": {
-      "lang": "ja",
+      "lang": "zh-CN",
       "repo": "your-github-username/your-repo-name",
       "theme": "preferred_color_scheme",
       "repoId": "your-repo-id",
@@ -28,7 +28,7 @@
     },
     "system": "twikoo",
     "twikoo": {
-      "lang": "ja",
+      "lang": "zh-CN",
       "envId": "https://twikoo.vercel.app"
     }
   },
@@ -209,8 +209,8 @@
     "hiddenOnMobile": true
   },
   "profile": {
-    "bio": "世界は大きい、君は行かなければならない",
-    "name": "まつざか ゆき",
+    "bio": "记录技术与生活",
+    "name": "YunLuo",
     "links": [
       {
         "url": "https://space.bilibili.com/701864046",
@@ -379,7 +379,7 @@
       "floating": true,
       "mobileTop": true,
       "desktopSidebar": true,
-      "useJapaneseBadge": true
+      "useJapaneseBadge": false
     },
     "font": {
       "cjkFont": {
@@ -403,7 +403,7 @@
     "anime": {
       "mode": "local"
     },
-    "title": "Mizuki",
+    "title": "YunLuoBlog",
     "banner": {
       "src": {
         "mobile": [
@@ -437,14 +437,13 @@
         "interval": 3
       },
       "homeText": {
-        "title": "わたしの部屋",
+        "title": "YunLuoBlog",
         "enable": true,
         "subtitle": [
-          "特別なことはないけど、君がいると十分です",
-          "今でもあなたは私の光",
-          "君ってさ、知らないうちに私の毎日になってたよ",
-          "君と話すと、なんか毎日がちょっと楽しくなるんだ",
-          "今日はなんでもない日。でも、ちょっとだけいい日"
+          "记录技术，分享生活",
+          "代码改变世界，文字记录思考",
+          "每一个 Bug 都是一次成长",
+          "保持好奇，持续学习"
         ],
         "typewriter": {
           "speed": 100,
