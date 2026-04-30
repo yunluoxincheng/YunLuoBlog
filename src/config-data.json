@@ -73,7 +73,7 @@
     "id": "14164869977",
     "mode": "local",
     "type": "playlist",
-    "enable": true,
+    "enable": false,
     "server": "netease",
     "meting_api": "https://meting.mysqil.com/api?server=:server&type=:type&id=:id&auth=:auth&r=:r",
     "floatingEntryMode": "fab",

@@ -13,25 +13,47 @@ src/
 
 ## 配置结构
 
-`config-data.json` 是一个多层嵌套的 JSON 文件，包含以下配置块：
+### 字段速查表
 
-| 配置块 | 说明 | 关键字段 |
-|--------|------|----------|
-| `site` | 站点信息 | `title`(标题), `subtitle`(副标题), `lang`(语言), `siteURL`(网站地址) |
-| `site.themeColor` | 主题色 | `hue`(HSL 色相 0-360), `fixed`(是否固定) |
-| `site.wallpaperMode` | 壁纸模式 | `enable`, `type`(cover/fixed) |
-| `site.toc` | 目录设置 | `enable`, `mode`(float/sidebar), `depth` |
-| `site.featurePages` | 功能开关 | 控制各页面的显示/隐藏 |
-| `navbar` | 导航栏 | `links` 数组，每项含 `name`, `url`, `preset`, `icon` |
-| `profile` | 个人信息 | `name`, `avatar`, `bio`, `socialLinks` |
-| `comment` | 评论系统 | `enable`, `type`(twikoo/giscus), `twikooConfig` |
-| `music-player` | 音乐播放器 | `enable`, `mode`(local/meting), `localPlaylist` |
-| `footer` | 页脚 | `enable`, `links`, `copyright` |
-| `announcement` | 公告 | `enable`, `content` |
-| `sidebar-layout` | 侧边栏布局 | 控制左右侧边栏的部件 |
-| `pio` | 看板娘 | `enable`, `model` |
-| `expressive-code` | 代码块 | `hideDuringThemeTransition` |
-| `sakura` | 樱花特效 | `enable` |
+> 搜关键词定位 → 在 `config-data.json` 中写入对应 JSON 路径即可。
+
+| 想改什么 | 搜索关键词 | JSON 路径 | 类型 |
+|---------|-----------|-----------|------|
+| 站点标题 | 标题 / title | `site.title` | string |
+| 站点副标题（浏览器标签页） | 副标题 / subtitle | `site.subtitle` | string |
+| 网站域名 | 域名 / URL | `site.siteURL` | string |
+| 语言 | 语言 / lang | `site.lang` | string（`zh_CN`/`en`/`ja`） |
+| 主题色 | 颜色 / hue / 色相 | `site.themeColor.hue` | number（0-360） |
+| 壁纸 | 壁纸 / wallpaper | `site.wallpaperMode.enable` | boolean |
+| TOC 目录 | 目录 / toc | `site.toc.enable` | boolean |
+| TOC 深度 | toc / depth | `site.toc.depth` | number |
+| 启用/关闭日记页 | 日记 / diary | `site.featurePages.diary` | boolean |
+| 启用/关闭友链页 | 友链 / friends | `site.featurePages.friends` | boolean |
+| 启用/关闭相册页 | 相册 / albums | `site.featurePages.albums` | boolean |
+| 启用/关闭番剧页 | 番剧 / anime | `site.featurePages.anime` | boolean |
+| 启用/关闭设备页 | 设备 / devices | `site.featurePages.devices` | boolean |
+| 用户名（个人信息） | 用户名 / name | `profile.name` | string |
+| 个人简介 | 简介 / bio | `profile.bio` | string |
+| 头像 | 头像 / avatar | `profile.avatar` | string |
+| 社交链接 | 社交 / links | `profile.links` | array |
+| Banner 大标题 | Banner / homeText | `site.banner.homeText.title` | string |
+| Banner 副标题 | Banner / 副标题 | `site.banner.homeText.subtitle` | array |
+| 左上角品牌名 | 品牌 / 导航 / navbar | `navbar.brand.text` | string |
+| 导航菜单 | 导航 / navbar / links | `navbar.links` | array |
+| 公告内容 | 公告 / announcement | `announcement.content` | string |
+| 启用评论 | 评论 / comment | `comment.enable` | boolean |
+| 评论系统切换 | 评论 / twikoo / giscus | `comment.system` | string |
+| Twikoo 地址 | twikoo / envId | `comment.twikoo.envId` | string |
+| Giscus 仓库 | giscus / repo | `comment.giscus.repo` | string |
+| 启用音乐播放器 | 音乐 / music | `music-player.enable` | boolean |
+| 音乐播放器模式 | meting / local | `music-player.mode` | string |
+| 本地歌单 | 歌单 / localPlaylist | `music-player.localPlaylist` | array |
+| Meting 歌单 ID | meting / id | `music-player.id` | string |
+| 启用页脚 | 页脚 / footer | `footer.enable` | boolean |
+| 页脚内容 | 备案 / footer | `footer.customHtml` | string |
+| 启用看板娘 | 看板娘 / pio | `pio.enable` | boolean |
+| 启用樱花特效 | 樱花 / sakura | `sakura.enable` | boolean |
+| 代码块主题过渡 | expressive / code | `expressive-code.hideDuringThemeTransition` | boolean |
 
 ## 常见配置操作
 
