@@ -1,140 +1,122 @@
 # YunluoBlog
 
-YunluoBlog 全栈博客系统，由前端（Astro）、后端（Spring Boot）、数据库（PostgreSQL）和反向代理（Nginx）组成，通过 Docker Compose 一键部署。
+纯静态个人博客系统，前端使用 Astro 6 + Svelte 5 构建，Nginx + Docker 部署，Git push 后自动构建上线。
 
 ## 系统架构
 
 ```
-                    Internet
-                       |
-                  [Nginx :80]
-                  /    |     \
-                 /     |      \
-      静态页面(/)  API代理(/api)  媒体代理(/uploads)
-            |          |            |
-      dist bind mount  |       uploads bind mount
-            |          |            |
-       web 构建容器  server:8080    宿主 uploads/
-                        |
-                    db:5432 (仅容器内网)
+作者 git push 文章或配置
+       ↓
+  GitHub Actions 自动构建
+       ↓
+  astro build → Docker 镜像
+       ↓
+  推送到 Docker Hub
+       ↓
+  SSH 到服务器自动更新容器
+       ↓
+  [Nginx :${NGINX_PORT}] 纯静态页面
 ```
 
-**数据流**：
-
-- **博客文章**：构建时从后端 API 同步到 Markdown 文件 → Astro 静态生成 HTML
-- **展示页面**（友链、追番、日记、项目等）：运行时从 API 获取数据
-- **管理后台**（`/admin/`）：完整的 JWT 认证 + 全部内容 CRUD 管理
-
 ## 仓库结构
-
-本仓库为部署编排层，前端和后端通过 git submodule 引用：
 
 ```
 yunluoblog/
 ├── yunluoblog-web/        # 前端 — Astro 6 + Svelte 5（submodule）
-├── yunluoblog-server/     # 后端 — Spring Boot 3.4 API（submodule）
 ├── nginx/
-│   └── nginx.conf         # Nginx 反向代理配置
-├── docker-compose.yml     # 容器编排（db + server + web + nginx）
-├── .env.example           # 环境变量模板
-├── uploads/               # 文件上传存储目录（bind mount）
+│   └── nginx.conf         # Nginx 静态文件服务配置
+├── Dockerfile             # 多阶段构建（node build → nginx）
+├── docker-compose.yml     # 容器编排（单 nginx 服务）
+├── .env.example           # 环境变量模板（仅 NGINX_PORT）
+├── .github/workflows/     # CI/CD 自动部署
+├── uploads/               # 上传文件存储目录
 └── README.md
 ```
 
 ## 功能概览
 
-### 前端（yunluoblog-web）
-
 - Astro 6 静态站点 + Svelte 5 交互组件
-- 完整管理后台（19 个管理页面），JWT 认证，自动 Token 刷新
-- 博客文章、分类、标签、归档
+- 博客文章（Markdown 文件管理）、分类、标签、归档
 - 追番、日记、友链、项目展示、技能、时间线、设备展示
-- 相册（本地扫描 + API 管理）
+- 相册（本地文件扫描）
 - Pagefind 全文搜索、RSS/Atom、站点地图
 - 暗色模式、主题色自定义、Swup 页面过渡动画
 - 评论系统（Twikoo / Giscus）
 - 音乐播放器
 
-### 后端（yunluoblog-server）
-
-- Spring Boot 3.4 REST API，70+ 端点，16 个控制器
-- 17 个实体类，20 张数据库表，Flyway 迁移管理
-- JWT 无状态认证（HS256，访问令牌 15 分钟 + 刷新令牌 7 天）
-- 全部内容的 CRUD 管理：文章、分类、标签、友链、追番、日记、项目、技能、时间线、设备、相册
-- 文件上传服务（10MB 限制，类型白名单，UUID 文件名）
-- 站点配置管理（带版本历史）
-- 导航链接树管理
-- AOP 审计日志（自动记录所有管理操作）
-- 加密文章（密码保护）
-- Swagger UI / OpenAPI 文档
-- 18 个集成测试类
-
 ## 快速开始
 
-### 前置条件
-
-- Docker & Docker Compose
-- Git
-
-### 部署步骤
+### 本地开发
 
 ```bash
-git clone --recurse-submodules https://github.com/yunluoxincheng/yunluoblog.git
-cd yunluoblog
-cp .env.example .env
-# 编辑 .env 修改数据库密码、JWT 密钥等敏感信息
+cd yunluoblog-web
+pnpm install
+pnpm dev
+```
+
+### 本地 Docker 部署
+
+```bash
+# 先构建前端
+cd yunluoblog-web
+pnpm build
+
+# 回到根目录
+cd ..
 docker compose up -d --build
 ```
 
-### 初始管理员账号
+### 生产部署
 
-首次启动后 Flyway 自动创建：
+```bash
+# 服务器上
+mkdir -p /opt/yunluoblog
+cd /opt/yunluoblog
 
-- 用户名：`admin`
-- 密码：`admin123`
-- **请务必在首次登录后修改默认密码**
+# 创建 .env 文件
+echo "NGINX_PORT=80" > .env
 
-## 服务说明
+# 创建 docker-compose.yml（参考下方配置）
+# 启动
+docker compose up -d
+```
 
-| 服务 | 说明 | 端口 |
-|------|------|------|
-| nginx | 反向代理 + 前端静态托管 + 媒体文件托管 | `${NGINX_PORT}`（默认 80） |
-| web | 前端构建容器（运行 `astro build`，输出到 dist） | 无（不对外提供服务） |
-| server | 后端 API (Spring Boot) | `${SERVER_PORT}`（默认 8080） |
-| db | PostgreSQL 数据库 | 仅容器内部网络（不映射宿主机端口） |
+**配置 GitHub Secrets 后，push 到 main 分支即可自动部署。**
 
-## Nginx 路由
+## 内容管理
 
-| 路径 | 目标 | 说明 |
-|------|------|------|
-| `/` | `/usr/share/nginx/html` | 前端静态文件（dist） |
-| `/albums/` | `/usr/share/nginx/html/albums` | 相册页面回退到 `/albums/index.html` |
-| `/api/` | `server:8080` | 后端 API（自动去除 `/api` 前缀） |
-| `/api/swagger-ui/` | `server:8080` | Swagger API 文档（需 ADMIN/EDITOR） |
-| `/api/v3/api-docs` | `server:8080` | OpenAPI 规范（需 ADMIN/EDITOR） |
-| `/uploads/` | `/app/uploads` | 媒体文件静态代理（30 天缓存） |
+所有内容通过文件系统管理，提交 Git 后自动部署：
+
+| 内容类型 | 文件位置 | 格式 |
+|----------|---------|------|
+| 博客文章 | `yunluoblog-web/src/content/posts/*.md` | Markdown + frontmatter |
+| 站点配置 | `yunluoblog-web/src/config-data.json` | JSON |
+| 友链数据 | `yunluoblog-web/src/data/friends.ts` | TypeScript |
+| 日记数据 | `yunluoblog-web/src/data/diary.ts` | TypeScript |
+| 相册数据 | `yunluoblog-web/src/data/albums.ts` | TypeScript |
+| 番剧数据 | `yunluoblog-web/src/data/anime.ts` | TypeScript |
+| 项目数据 | `yunluoblog-web/src/data/projects.ts` | TypeScript |
+| 技能数据 | `yunluoblog-web/src/data/skills.ts` | TypeScript |
+| 时间线数据 | `yunluoblog-web/src/data/timeline.ts` | TypeScript |
+| 设备数据 | `yunluoblog-web/src/data/devices.ts` | TypeScript |
+| 图片资源 | `yunluoblog-web/public/images/` | 图片文件 |
+| 相册照片 | `yunluoblog-web/public/albums/` | 图片文件 |
 
 ## 环境变量
 
-参见 `.env.example`：
-
 | 变量 | 说明 | 默认值 |
 |------|------|--------|
-| `POSTGRES_DB` | 数据库名 | `yunluoblog` |
-| `POSTGRES_USER` | 数据库用户 | `yunluo` |
-| `POSTGRES_PASSWORD` | 数据库密码 | `changeme` |
-| `SPRING_DATASOURCE_URL` | 数据库连接 URL | `jdbc:postgresql://db:5432/yunluoblog` |
-| `JWT_SECRET` | JWT 签名密钥（至少 32 字节） | — |
-| `CORS_ALLOWED_ORIGIN` | 允许跨域的前端域名 | `http://localhost:4321` |
-| `SERVER_PORT` | 后端暴露端口 | `8080` |
 | `NGINX_PORT` | Nginx 暴露端口 | `80` |
 
-## 子项目
+## GitHub Secrets 配置
 
-| 仓库 | 说明 |
-|------|------|
-| [yunluoblog-web](https://github.com/yunluoxincheng/yunluoblog-web) | 前端 — Astro 6 + Svelte 5 |
-| [yunluoblog-server](https://github.com/yunluoxincheng/yunluoblog-server) | 后端 — Spring Boot 3.4 API |
+| Secret | 说明 |
+|--------|------|
+| `DOCKERHUB_USERNAME` | Docker Hub 用户名（yunluoxincheng） |
+| `DOCKERHUB_TOKEN` | Docker Hub Access Token |
+| `SSH_HOST` | 服务器 IP 或域名 |
+| `SSH_USER` | 服务器 SSH 用户名 |
+| `SSH_KEY` | SSH 私钥 |
 
 ## 许可证
 

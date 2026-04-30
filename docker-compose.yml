@@ -1,11 +1,10 @@
 services:
-  nginx:
-    image: nginx:alpine
-    container_name: yunluoblog-nginx
+  blog:
+    build: .
+    image: yunluoxincheng/yunluoblog:latest
+    container_name: yunluoblog
     restart: unless-stopped
     ports:
       - "${NGINX_PORT}:80"
     volumes:
-      - ./yunluoblog-web/dist:/usr/share/nginx/html:ro
-      - ./uploads:/app/uploads:ro
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./uploads:/usr/share/nginx/html/uploads:ro

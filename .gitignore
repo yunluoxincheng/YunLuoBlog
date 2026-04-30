@@ -21,7 +21,5 @@ AGENTS.md
 ### OpenSpec ###
 openspec/
 
-### GitHub ###
-.github/
 nul
 check_configs.ts
