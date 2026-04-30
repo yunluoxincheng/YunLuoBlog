@@ -397,16 +397,16 @@ class MusicPlayerStore {
 	}
 
 	private loadSong(song: Song, autoPlay = true): void {
-		if (!song) {
+		if (!song || !song.url) {
+			this.state.isLoading = false;
+			this.state.errorMessage = "";
+			this.state.showError = false;
+			this.broadcastState();
 			return;
 		}
 		if (song.url !== this.state.currentSong.url) {
 			this.state.currentSong = { ...song };
-			if (song.url) {
-				this.state.isLoading = true;
-			} else {
-				this.state.isLoading = false;
-			}
+			this.state.isLoading = true;
 		}
 		this.state.willAutoPlay = autoPlay;
 		if (this.audio) {
