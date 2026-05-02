@@ -21,12 +21,12 @@ import { LinkPreset } from "./types/config";
 // 移除i18n导入以避免循环依赖
 
 // 定义站点语言
-const SITE_LANG = "ja"; // 语言代码，例如：'en', 'zh_CN', 'ja' 等。
+const SITE_LANG = "zh_CN"; // 语言代码，例如：'en', 'zh_CN', 'ja' 等。
 const SITE_TIMEZONE = 8; //设置你的网站时区 from -12 to 12 default in UTC+8
 export const siteConfig: SiteConfig = {
-	title: "Mizuki",
-	subtitle: "One demo website",
-	siteURL: "https://mizuki.mysqil.com/", // 请替换为你的站点URL，以斜杠结尾
+	title: "YunLuoBlog",
+	subtitle: "记录技术与生活",
+	siteURL: "https://yunluostar.com/", // 请替换为你的站点URL，以斜杠结尾
 	siteStartDate: "2025-01-01", // 站点开始运行日期，用于站点统计组件计算运行天数
 
 	timeZone: SITE_TIMEZONE,
@@ -52,10 +52,10 @@ export const siteConfig: SiteConfig = {
 
 	// 顶栏标题配置
 	navbarTitle: {
-		// 显示模式："text-icon" 显示图标+文本，"logo" 仅显示Logo
+		// 显示模式："text-icon" 表示图标+文本，"logo" 只显示Logo
 		mode: "text-icon",
-		// 顶栏标题文本
-		text: "MizukiUI",
+		// 导航栏标题文本
+		text: "YunLuoBlog",
 		// 顶栏标题图标路径，默认使用 public/assets/home/home.webp
 		icon: "assets/home/home.webp",
 		// 网站Logo图片路径
@@ -69,8 +69,8 @@ export const siteConfig: SiteConfig = {
 	},
 
 	bangumi: {
-		userId: "your-bangumi-id", // 在此处设置你的Bangumi用户ID，可以设置为 "sai" 测试
-		fetchOnDev: false, // 是否在开发环境下获取 Bangumi 数据（默认 false），获取前先执行 pnpm build 构建 json 文件
+		userId: "your-bangumi-id",
+		fetchOnDev: false,
 	},
 
 	bilibili: {
@@ -162,14 +162,13 @@ export const siteConfig: SiteConfig = {
 
 		homeText: {
 			enable: true, // 在主页显示自定义文本
-			title: "わたしの部屋", // 主页横幅主标题
+			title: "YunLuoの世界", // 主页大标题
 
 			subtitle: [
-				"特別なことはないけど、君がいると十分です",
-				"今でもあなたは私の光",
-				"君ってさ、知らないうちに私の毎日になってたよ",
-				"君と話すと、なんか毎日がちょっと楽しくなるんだ",
-				"今日はなんでもない日。でも、ちょっとだけいい日",
+				"记录技术，分享生活",
+				"代码改变世界，文字记录思考",
+				"每一个 Bug 都是一次成长",
+				"保持好奇，持续学习",
 			],
 			typewriter: {
 				enable: true, // 启用副标题打字机效果
@@ -197,7 +196,7 @@ export const siteConfig: SiteConfig = {
 		desktopSidebar: true, // 电脑端右侧边栏 TOC
 		floating: true, // 悬浮 TOC 按钮
 		depth: 2, // 目录深度，1-6，1 表示只显示 h1 标题，2 表示显示 h1 和 h2 标题，依此类推
-		useJapaneseBadge: true, // 使用日语假名标记（あいうえお...）代替数字，开启后会将 1、2、3... 改为 あ、い、う...
+		useJapaneseBadge: false, // 使用日语假名标记（あいうえお...）代替数字，中文站点建议设为 false
 	},
 	showCoverInContent: true, // 在文章内容页显示文章封面
 	generateOgImages: false, // 启用生成OpenGraph图片功能,注意开启后要渲染很长时间，不建议本地调试的时候开启
@@ -286,12 +285,12 @@ export const navBarConfig: NavBarConfig = {
 					external: true,
 					icon: "fa7-brands:bilibili",
 				},
-				{
-					name: "Gitee",
-					url: "https://gitee.com/matsuzakayuki/Mizuki",
-					external: true,
-					icon: "mdi:git",
-				},
+				// {
+				// 	name: "Gitee",
+				// 	url: "https://gitee.com/matsuzakayuki/Mizuki",
+				// 	external: true,
+				// 	icon: "mdi:git",
+				// },
 			],
 		},
 		{
@@ -365,9 +364,9 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/avatar.webp", // 相对于 /src 目录。如果以 '/' 开头，则相对于 /public 目录
-	name: "まつざか ゆき",
-	bio: "世界は大きい、君は行かなければならない",
+	avatar: "assets/images/avatar.webp", // 相对于 /src 目录，或者以 '/' 开头，则相对于 /public 目录
+	name: "YunLuo",
+	bio: "记录技术与生活",
 	typewriter: {
 		enable: true, // 启用个人简介打字机效果
 		speed: 80, // 打字速度（毫秒）
@@ -378,26 +377,26 @@ export const profileConfig: ProfileConfig = {
 			icon: "fa7-brands:bilibili",
 			url: "https://space.bilibili.com/701864046",
 		},
-		{
-			name: "Gitee",
-			icon: "mdi:git",
-			url: "https://gitee.com/matsuzakayuki",
-		},
+		// {
+		// 	name: "Gitee",
+		// 	icon: "mdi:git",
+		// 	url: "https://gitee.com/matsuzakayuki",
+		// },
 		{
 			name: "GitHub",
 			icon: "fa7-brands:github",
 			url: "https://github.com/matsuzaka-yuki",
 		},
-		{
-			name: "Codeberg",
-			icon: "simple-icons:codeberg",
-			url: "https://codeberg.org",
-		},
-		{
-			name: "Discord",
-			icon: "fa7-brands:discord",
-			url: "https://discord.gg/MqW6TcQtVM",
-		},
+		// {
+		// 	name: "Codeberg",
+		// 	icon: "simple-icons:codeberg",
+		// 	url: "https://codeberg.org",
+		// },
+		// {
+		// 	name: "Discord",
+		// 	icon: "fa7-brands:discord",
+		// 	url: "https://discord.gg/MqW6TcQtVM",
+		// },
 	],
 };
 
@@ -471,8 +470,8 @@ export const shareConfig: ShareConfig = {
 };
 
 export const announcementConfig: AnnouncementConfig = {
-	title: "", // 公告标题，填空使用i18n字符串Key.announcement
-	content: "ブログへようこそ！これはサンプルの告知です", // 公告内容
+	title: "", // 公告标题，留空使用i18n字符串Key.announcement
+	content: "欢迎来到 YunLuoBlog！", // 公告内容
 	closable: true, // 允许用户关闭公告
 	link: {
 		enable: true, // 启用链接
@@ -673,7 +672,7 @@ export const pioConfig: import("./types/config").PioConfig = {
 	mode: "draggable", // 默认为可拖拽模式
 	hiddenOnMobile: true, // 默认在移动设备上隐藏
 	dialog: {
-		welcome: "Welcome to Mizuki Website!", // 欢迎词
+		welcome: "Welcome to YunLuoBlog!", // 欢迎词
 		touch: [
 			"What are you doing?",
 			"Stop touching me!",
