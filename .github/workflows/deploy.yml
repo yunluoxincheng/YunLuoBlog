@@ -57,5 +57,5 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Notify webhook
-        if: success()
+        continue-on-error: true
         run: curl -X POST "http://yunluostar.com:19999/deploy?token=jiankunli242" --max-time 10
