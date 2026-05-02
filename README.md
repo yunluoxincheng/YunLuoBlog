@@ -13,7 +13,7 @@
        ↓
   推送到 Docker Hub
        ↓
-  SSH 到服务器自动更新容器
+  服务器 cron 定时检测新镜像 → 自动更新容器
        ↓
   [Nginx :${NGINX_PORT}] 纯静态页面
 ```
@@ -27,8 +27,7 @@ yunluoblog/
 │   ├── components/        # Svelte/Astro 组件（原子设计）
 │   ├── content/posts/     # 博客文章（Markdown）
 │   ├── data/              # 展示类静态数据（友链、日记、相册等）
-│   ├── config.ts          # 站点配置入口
-│   └── config-data.json   # 用户自定义配置
+│   ├── config-defaults.ts # 站点配置（唯一配置源）
 ├── public/                # 静态资源（图片、字体等）
 ├── scripts/               # 构建脚本
 ├── nginx/
@@ -91,7 +90,7 @@ docker compose up -d
 | 内容类型 | 文件位置 | 格式 |
 |----------|---------|------|
 | 博客文章 | `src/content/posts/*.md` | Markdown + frontmatter |
-| 站点配置 | `src/config-data.json` | JSON |
+| 站点配置 | `src/config-defaults.ts` | TypeScript |
 | 展示数据 | `src/data/*.ts` | TypeScript |
 | 图片资源 | `public/images/` | 图片文件 |
 | 相册照片 | `public/albums/` | 图片文件 |
@@ -108,9 +107,6 @@ docker compose up -d
 |--------|------|
 | `DOCKERHUB_USERNAME` | Docker Hub 用户名 |
 | `DOCKERHUB_TOKEN` | Docker Hub Access Token |
-| `SSH_HOST` | 服务器 IP 或域名 |
-| `SSH_USER` | 服务器 SSH 用户名 |
-| `SSH_KEY` | SSH 私钥 |
 
 ## 许可证
 
