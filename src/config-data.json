@@ -205,29 +205,14 @@
 		"name": "YunLuo",
 		"links": [
 			{
-				"url": "https://space.bilibili.com/701864046",
+				"url": "https://space.bilibili.com/171212943",
 				"icon": "fa7-brands:bilibili",
 				"name": "Bilibili"
 			},
 			{
-				"url": "https://gitee.com/matsuzakayuki",
-				"icon": "mdi:git",
-				"name": "Gitee"
-			},
-			{
-				"url": "https://github.com/matsuzaka-yuki",
+				"url": "https://github.com/yunluoxincheng",
 				"icon": "fa7-brands:github",
 				"name": "GitHub"
-			},
-			{
-				"url": "https://codeberg.org",
-				"icon": "simple-icons:codeberg",
-				"name": "Codeberg"
-			},
-			{
-				"url": "https://discord.gg/MqW6TcQtVM",
-				"icon": "fa7-brands:discord",
-				"name": "Discord"
 			}
 		],
 		"avatar": "assets/images/avatar.webp",
