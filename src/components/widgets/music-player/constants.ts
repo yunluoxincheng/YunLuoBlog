@@ -69,6 +69,14 @@ export const LOCAL_PLAYLIST: Song[] = [
 		url: "assets/music/url/トゲナシトゲアリ-空の箱.mp3",
 		duration: 0,
 	},
+	{
+		id: 9,
+		title: "星屑ビーナス",
+		artist: "Aimer",
+		cover: "/favicon/favicon.ico",
+		url: "assets/music/url/星屑ビーナス-Aimer.128.mp3",
+		duration: 0,
+	},
 ];
 
 export const DEFAULT_SONG: Song = {
