@@ -12,6 +12,7 @@ src/
 ## 修改方式
 
 直接编辑 `src/config-defaults.ts`，搜关键词找到对应代码行，改完提交即可。因为是 TypeScript，支持：
+
 - 行内注释标注每个字段的用途
 - IDE 自动补全和类型检查
 - 改错会有编译错误提醒
@@ -115,11 +116,13 @@ export const commentConfig: CommentConfig = {
 
 1. 编辑 `src/config-defaults.ts`
 2. 提交推送：
+
 ```bash
 git add src/config-defaults.ts
 git commit -m "更新配置"
 git push origin main
 ```
+
 3. CI 自动构建部署，约 3-5 分钟后刷新页面可见
 
 ## 注意事项
