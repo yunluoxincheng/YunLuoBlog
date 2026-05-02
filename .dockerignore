@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.git/
+.claude/
+.kilocode/
+openspec/
+.vscode/
+.idea/
+.env
+.DS_Store

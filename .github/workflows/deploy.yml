@@ -52,15 +52,3 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/yunluoblog:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            cd /opt/yunluoblog
-            docker compose pull
-            docker compose up -d --remove-orphans
-            docker image prune -f
