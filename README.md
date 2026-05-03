@@ -11,10 +11,12 @@
        ↓
   astro build → Docker 镜像
        ↓
-  推送到 Docker Hub
-       ↓
-  服务器 cron 定时检测新镜像 → 自动更新容器
-       ↓
+   推送到 Docker Hub
+        ↓
+   Webhook 即时通知 / Cron 轮询
+        ↓
+   服务器自动拉取新镜像更新容器
+        ↓
   [Nginx :${NGINX_PORT}] 纯静态页面
 ```
 

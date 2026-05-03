@@ -111,6 +111,71 @@ git push origin main
 
 CI 构建推镜像 → 服务器 cron 检测到新镜像 → 自动重启，约 3-5 分钟上线。
 
+## 进阶：Webhook 即时更新（可选）
+
+如果觉得 cron 每分钟轮询延迟太大，可以配置 Webhook 实现推送后即时部署。
+
+### 创建 Webhook 服务
+
+```bash
+cat > /home/ljk/yunluoblog/webhook.py << 'EOF'
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import subprocess
+
+TOKEN = "你的自定义密钥"
+
+class Handler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        if self.path.split("token=")[-1] == TOKEN:
+            subprocess.run(["bash", "/home/ljk/yunluoblog/auto-update.sh"])
+            self.send_response(200)
+        else:
+            self.send_response(403)
+        self.end_headers()
+
+HTTPServer(("0.0.0.0", 9999), Handler).serve_forever()
+EOF
+```
+
+### 设为系统服务
+
+```bash
+sudo cat > /etc/systemd/system/yunluoblog-webhook.service << 'EOF'
+[Unit]
+Description=YunLuoBlog Webhook
+After=network.target
+
+[Service]
+Type=simple
+User=ljk
+WorkingDirectory=/home/ljk/yunluoblog
+ExecStart=/usr/bin/python3 /home/ljk/yunluoblog/webhook.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable yunluoblog-webhook
+sudo systemctl start yunluoblog-webhook
+```
+
+### 通过 FRP 暴露端口
+
+在 FRP 客户端配置中添加端口转发，将云服务器某个端口映射到本地 9999。
+
+### 在 CI 中添加 Webhook 通知
+
+在 `.github/workflows/deploy.yml` 的镜像推送步骤后添加：
+
+```yaml
+- name: Notify webhook
+  run: curl -X POST "http://你的域名:端口/deploy?token=你的自定义密钥" --max-time 10
+```
+
+配置完成后，git push 成功即秒级部署。
+
 ## 回滚
 
 ```bash
