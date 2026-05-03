@@ -471,11 +471,11 @@ export const shareConfig: ShareConfig = {
 
 export const announcementConfig: AnnouncementConfig = {
 	title: "", // 公告标题，留空使用i18n字符串Key.announcement
-	content: "欢迎来到 YunLuoBlog！", // 公告内容
+	content: "欢迎来到 YunLuoBlog！这里记录我的技术探索、生活随笔和兴趣爱好。博客还在持续完善中，如果发现任何问题欢迎反馈。", // 公告内容
 	closable: true, // 允许用户关闭公告
 	link: {
 		enable: true, // 启用链接
-		text: "Learn More", // 链接文本
+		text: "了解更多", // 链接文本
 		url: "/about/", // 链接 URL
 		external: false, // 内部链接
 	},
